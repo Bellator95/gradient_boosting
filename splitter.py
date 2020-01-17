@@ -73,7 +73,7 @@ class Splitter():
         
         self.threshold_ = None
         self.feature_id_ = 0
-        self.impurity_reduction_ = None
+        self.impurity_reduction_ = 0.0
         
         self._root_impurity = None
         
