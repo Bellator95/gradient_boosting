@@ -37,8 +37,10 @@ class TreeBuilder():
     ---------
         merge_leaf_func: function,
             The function which is used for merging predictions in leaf node into single scalar.
+
         criterion: string,
             The name of criterion to split data and reduce impurity.
+
         max_depth: integer,
             The maximal depth of the constructed tree.
     """
@@ -62,6 +64,7 @@ class TreeBuilder():
         ----------
             X : array, shape (n_samples, n_features)
                 Training data
+
             y : array, shape (n_samples,)
                 Target values.
         """
