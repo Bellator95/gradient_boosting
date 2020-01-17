@@ -52,6 +52,7 @@ class AbstractCriterion(metaclass=ABCMeta):
 
 
 class GiniCriterion(AbstractCriterion):
+    """ Gini criterion for classification. """
 
     def impurity_score(self, y):
         """ Returns Gini impurity score. """
@@ -60,22 +61,24 @@ class GiniCriterion(AbstractCriterion):
 
 
 class EntropyCriterion(AbstractCriterion):
+    """ Entropy criterion for classification. """
 
     def impurity_score(self, y):
         """ Returns Entropy impurity score. """
         _, counts = np.unique(y, return_counts=True)
-        probas = counts / y.shape[0]
-        return - probas @ np.log2(probas)
+        p = counts / y.shape[0]
+        return - p @ np.log2(p)
 
 
 class MSECriterion(AbstractCriterion, metaclass=ABCMeta):
-    """ Base class for regression criterion (MSE, FriedmanMSE)."""
+    """ MSE criterion for classification. """
 
     def impurity_score(self, y):
         return np.var(y)
 
 
 class FriedmanMSECriterion(MSECriterion):
+    """ Friedman MSE criterion for classification. """
 
     def split_impurity_score(self, y_left, y_right):
         n_left, n_right = y_left.shape[0], y_right.shape[0]
@@ -91,4 +94,3 @@ CRITERIONS = {
     "mse": MSECriterion(),
     "friedman_mse": FriedmanMSECriterion(),
 }
-
