@@ -80,8 +80,9 @@ class Splitter():
     def _get_feature_values(self, feature):
         """ Returns the selected feature values for further search. 
 
-        Arguments:
-            feature: array with shape = [n_samples,].
+        Parameters
+        ----------
+            feature: array, shape  (n_samples,).
         """
         if feature.shape[0] > self._max_n_blocks:
             min_val, max_val = np.min(feature), np.max(feature)
@@ -106,10 +107,10 @@ class Splitter():
 
         Parameters
         ----------
-            X : array-like or sparse matrix, shape = [n_samples, n_features]
-                The data to find a best split.
-            y : array-like, shape = [n_samples]
-                The target values (class labels) as integers.
+            X : array, shape (n_samples, n_features)
+                Training data
+            y : array, shape (n_samples,)
+                Target values.
         """
 
         self._root_impurity = self._criterion.impurity_score(y)
@@ -182,7 +183,6 @@ class Splitter():
         return output
         
     def fit_split(self, X, y, only_indexes=False):
-        """ Runs fit(X, y) and split(X, y) sequentially. """
         self.fit(X, y)
         return self.split(X, y, only_indexes)
         
@@ -192,11 +192,11 @@ class Splitter():
         
         Parameters
         ----------
-        feature : array-like of shape = [n_samples]
+        feature : array, shape (n_samples,)
         
         Returns
         -------
-            True if feature has integer data type.
+            True if feature has integer data type else False.
             
         """
         return np.isclose(np.abs(feature.astype(np.int32) - feature).sum(), 0.)
