@@ -143,11 +143,11 @@ class Splitter():
         
         Parameters
         ----------
-            X : {array-like, sparse matrix}, shape (n_samples, n_features)
+            X : array, shape (n_samples, n_features)
                 Training data
 
             y : array, shape (n_samples,), optional (default=None).
-                Target values. Will be cast to X's dtype if necessary
+                Target values.
                 
             only_indexes: boolean, optional (default=False)
                 If True, returns just indexes of split.
