@@ -144,7 +144,7 @@ class DecisionTreeRegressor(Tree, RegressorMixin):
             criterion=criterion,
             max_depth=max_depth)
 
-        self.split_criterion = criterion
+        self.criterion = criterion
         self.max_depth = max_depth
 
 
