@@ -8,4 +8,4 @@ Fixes #N (N - issue number)
 Why we need this PR?
 
 # How to get?
-`git clone --recursive -b feature/blabla git@github.com:aartiukh/sph.git`
+`git clone --recursive -b dev git@github.com:Bellator95/gradient_boosting.git`
