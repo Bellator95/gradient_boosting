@@ -7,6 +7,7 @@ from tree import DecisionTreeRegressor
 
 class BaseGradientBoosting(BaseEstimator):
 
+    # TODO: remove base estimator from constructor
     def __init__(self,
                  base_estimator: BaseEstimator,
                  n_estimators: int,
