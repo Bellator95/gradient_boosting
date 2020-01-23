@@ -73,7 +73,7 @@ class TreeBuilder():
 
         maxsize = 0
         if self.max_depth is not None:
-            maxsize = 2 * self.max_depth + 1
+            maxsize = self.max_depth + 1
 
         stack = LifoQueue(maxsize)
         indexes = np.arange(y.shape[0])
