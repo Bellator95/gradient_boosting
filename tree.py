@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
     X_sh, y_sh = shuffle(x, y)
 
-    clf = DecisionTreeRegressor(criterion="friedman_mse", max_depth=3)
+    clf = DecisionTreeRegressor(criterion="friedman_mse", max_depth=0)
     clf.fit(X_sh, y_sh)
     print("Friedman: ", clf.score(x, y))
     x_cont = np.linspace(0, 50, 250).reshape(-1, 1)
