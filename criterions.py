@@ -71,14 +71,14 @@ class EntropyCriterion(AbstractCriterion):
 
 
 class MSECriterion(AbstractCriterion, metaclass=ABCMeta):
-    """ MSE criterion for classification. """
+    """ MSE criterion for regression. """
 
     def impurity_score(self, y):
         return np.var(y)
 
 
 class FriedmanMSECriterion(MSECriterion):
-    """ Friedman MSE criterion for classification. """
+    """ Friedman MSE criterion for regression. """
 
     def split_impurity_score(self, y_left, y_right):
         n_left, n_right = y_left.shape[0], y_right.shape[0]
