@@ -1,31 +1,27 @@
 import numpy as np
 
-from sklearn.base import BaseEstimator
 from sklearn.base import RegressorMixin
 from tree import DecisionTreeRegressor
 
 
-class BaseGradientBoosting(BaseEstimator):
+class BaseGradientBoostingRegressor:
 
-    # TODO: remove base estimator from constructor
     def __init__(self,
-                 base_estimator: BaseEstimator,
                  n_estimators: int,
                  learning_rate=None):
 
-        self.base_estimator = base_estimator
+        self.estimator = DecisionTreeRegressor(max_depth=2)
         self.n_estimators = n_estimators
-
         self.learning_rate = [learning_rate] * n_estimators
 
-        self._base_class_estimator = base_estimator.__class__
-        self._base_estimator_params = base_estimator.get_params()
+        self._base_class = self.estimator.__class__
+        self._estimator_params = self.estimator.get_params()
 
-        self._set_estimators()
+        self._set_estimator()
 
-    def _set_estimators(self):
-        est_class = self._base_class_estimator
-        est_params = self._base_estimator_params
+    def _set_estimator(self):
+        est_class = self._base_class
+        est_params = self._estimator_params
 
         self._estimators = [est_class(**est_params)
                             for _ in range(self.n_estimators)]
@@ -49,78 +45,16 @@ class BaseGradientBoosting(BaseEstimator):
         return y_pred
 
 
-class GradientBoostingRegressor(BaseGradientBoosting, RegressorMixin):
+class GradientBoostingRegressor(BaseGradientBoostingRegressor, RegressorMixin):
 
     def __init__(self,
-                 base_estimator: BaseEstimator,
                  n_estimators=100,
                  learning_rate=None):
 
         super().__init__(
-            base_estimator=base_estimator,
             n_estimators=n_estimators,
             learning_rate=learning_rate
         )
-
-
-if __name__ == '__main__':
-    import numpy as np
-
-    from sklearn.base import RegressorMixin
-    from tree import DecisionTreeRegressor
-
-
-    class BaseGradientBoostingRegressor:
-
-        def __init__(self,
-                     n_estimators: int,
-                     learning_rate=None):
-
-            self.estimator = DecisionTreeRegressor(max_depth=2)
-            self.n_estimators = n_estimators
-            self.learning_rate = [learning_rate] * n_estimators
-
-            self._base_class = self.estimator.__class__
-            self._estimator_params = self.estimator.get_params()
-
-            self._set_estimator()
-
-        def _set_estimator(self):
-            est_class = self._base_class
-            est_params = self._estimator_params
-
-            self._estimators = [est_class(**est_params)
-                                for _ in range(self.n_estimators)]
-
-        def fit(self, X, y):
-            y_pred = np.zeros_like(y)
-            self._init_pred = np.mean(y)
-            y_pred.fill(self._init_pred)
-            y_true = y
-
-            for i, est in enumerate(self._estimators):
-                y_err = y_true - y_pred
-                est.fit(X, y_err)
-                yi_pred = est.predict(X)
-                y_pred += self.learning_rate[i] * yi_pred
-
-        def predict(self, X):
-            y_pred = np.zeros(shape=(X.shape[0], 1)) + self._init_pred
-            for i, est in enumerate(self._estimators):
-                y_pred += self.learning_rate[i] * est.predict(X)
-            return y_pred
-
-
-    class GradientBoostingRegressor(BaseGradientBoostingRegressor, RegressorMixin):
-
-        def __init__(self,
-                     n_estimators=100,
-                     learning_rate=None):
-            super().__init__(
-                n_estimators=n_estimators,
-                learning_rate=learning_rate
-            )
-
 
 if __name__ == '__main__':
     from sklearn.utils import shuffle
