@@ -7,26 +7,27 @@ from tree import DecisionTreeRegressor
 class BaseGradientBoostingRegressor:
 
     def __init__(self,
-                 n_estimators: int,
+                 n_estimators: 5,
+                 max_depth: int,
                  learning_rate=None):
 
-        self.estimator = DecisionTreeRegressor(max_depth=2)
+        self.estimator = DecisionTreeRegressor
         self.n_estimators = n_estimators
+        self.max_depth = max_depth
         self.learning_rate = [learning_rate] * n_estimators
 
-        self._base_class = self.estimator.__class__
-        self._estimator_params = self.estimator.get_params()
+        self._estimator_params = self.estimator().get_params()
 
-        self._set_estimator()
+        self._set_estimators()
 
-    def _set_estimator(self):
-        est_class = self._base_class
+    def _set_estimators(self):
         est_params = self._estimator_params
 
-        self._estimators = [est_class(**est_params)
+        self._estimators = [self.estimator(**est_params)
                             for _ in range(self.n_estimators)]
 
     def fit(self, X, y):
+
         y_pred = np.zeros_like(y)
         self._init_pred = np.mean(y)
         y_pred.fill(self._init_pred)
@@ -49,25 +50,27 @@ class GradientBoostingRegressor(BaseGradientBoostingRegressor, RegressorMixin):
 
     def __init__(self,
                  n_estimators=100,
+                 max_depth=None,
                  learning_rate=None):
 
         super().__init__(
             n_estimators=n_estimators,
+            max_depth=max_depth,
             learning_rate=learning_rate
         )
 
+
 if __name__ == '__main__':
+
     from sklearn.utils import shuffle
     import matplotlib.pyplot as plt
     from sklearn.ensemble import GradientBoostingRegressor as GradientBoostingRegressor2
-
-    # from sklearn.tree import DecisionTreeRegressor
 
     params = {'n_estimators': 5, 'max_depth': 2,
               'learning_rate': 1., 'loss': 'ls'}
     gb2 = GradientBoostingRegressor2(**params)
 
-    gb = GradientBoostingRegressor(5, learning_rate=1.)
+    gb = GradientBoostingRegressor(n_estimators=5, max_depth=2, learning_rate=1.)
 
     x = np.arange(0, 50).reshape(-1, 1)
     y1 = np.random.uniform(10, 15, 10)
