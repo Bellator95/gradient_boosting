@@ -4,30 +4,28 @@ from sklearn.base import RegressorMixin
 from tree import DecisionTreeRegressor
 
 
-class BaseGradientBoostingRegressor:
+class GradientBoostingRegressor(RegressorMixin):
 
     def __init__(self,
-                 n_estimators: 5,
-                 max_depth: int,
-                 learning_rate=None):
+                 n_estimators=5,
+                 max_depth=None,
+                 learning_rate=1):
 
-        self.estimator = DecisionTreeRegressor
+        self._estimator = DecisionTreeRegressor
         self.n_estimators = n_estimators
         self.max_depth = max_depth
-        self.learning_rate = [learning_rate] * n_estimators
+        self._learning_rates_array = [learning_rate] * n_estimators
 
-        self._estimator_params = self.estimator().get_params()
+        self._estimator_params = self._estimator().get_params()
 
         self._set_estimators()
 
     def _set_estimators(self):
         est_params = self._estimator_params
-
-        self._estimators = [self.estimator(**est_params)
+        self._estimators = [self._estimator(**est_params)
                             for _ in range(self.n_estimators)]
 
     def fit(self, X, y):
-
         y_pred = np.zeros_like(y)
         self._init_pred = np.mean(y)
         y_pred.fill(self._init_pred)
@@ -37,40 +35,25 @@ class BaseGradientBoostingRegressor:
             y_err = y_true - y_pred
             est.fit(X, y_err)
             yi_pred = est.predict(X)
-            y_pred += self.learning_rate[i] * yi_pred
+            y_pred += self._learning_rates_array[i] * yi_pred
 
     def predict(self, X):
         y_pred = np.zeros(shape=(X.shape[0], 1)) + self._init_pred
         for i, est in enumerate(self._estimators):
-            y_pred += self.learning_rate[i] * est.predict(X)
+            y_pred += self._learning_rates_array[i] * est.predict(X)
         return y_pred
-
-
-class GradientBoostingRegressor(BaseGradientBoostingRegressor, RegressorMixin):
-
-    def __init__(self,
-                 n_estimators=100,
-                 max_depth=None,
-                 learning_rate=None):
-
-        super().__init__(
-            n_estimators=n_estimators,
-            max_depth=max_depth,
-            learning_rate=learning_rate
-        )
-
 
 if __name__ == '__main__':
 
     from sklearn.utils import shuffle
     import matplotlib.pyplot as plt
-    from sklearn.ensemble import GradientBoostingRegressor as GradientBoostingRegressor2
+    from sklearn.ensemble import GradientBoostingRegressor as BaselineRegressor
 
     params = {'n_estimators': 5, 'max_depth': 2,
               'learning_rate': 1., 'loss': 'ls'}
-    gb2 = GradientBoostingRegressor2(**params)
+    gb2 = BaselineRegressor(**params)
 
-    gb = GradientBoostingRegressor(n_estimators=5, max_depth=2, learning_rate=1.)
+    gb = GradientBoostingRegressor(max_depth=2, learning_rate=1)
 
     x = np.arange(0, 50).reshape(-1, 1)
     y1 = np.random.uniform(10, 15, 10)
