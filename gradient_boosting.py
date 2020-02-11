@@ -9,20 +9,19 @@ class GradientBoostingRegressor(RegressorMixin):
     def __init__(self,
                  n_estimators=5,
                  max_depth=None,
+                 criterion='friedman_mse',
                  learning_rate=1):
 
         self._estimator = DecisionTreeRegressor
         self.n_estimators = n_estimators
         self.max_depth = max_depth
+        self.criterion = criterion
         self._learning_rates_array = [learning_rate] * n_estimators
-
-        self._estimator_params = self._estimator().get_params()
 
         self._set_estimators()
 
     def _set_estimators(self):
-        est_params = self._estimator_params
-        self._estimators = [self._estimator(**est_params)
+        self._estimators = [self._estimator(max_depth=self.max_depth, criterion=self.criterion)
                             for _ in range(self.n_estimators)]
 
     def fit(self, X, y):
@@ -43,6 +42,7 @@ class GradientBoostingRegressor(RegressorMixin):
             y_pred += self._learning_rates_array[i] * est.predict(X)
         return y_pred
 
+
 if __name__ == '__main__':
 
     from sklearn.utils import shuffle
@@ -53,7 +53,7 @@ if __name__ == '__main__':
               'learning_rate': 1., 'loss': 'ls'}
     gb2 = BaselineRegressor(**params)
 
-    gb = GradientBoostingRegressor(max_depth=2, learning_rate=1)
+    gb = GradientBoostingRegressor(n_estimators=5, max_depth=2, learning_rate=1)
 
     x = np.arange(0, 50).reshape(-1, 1)
     y1 = np.random.uniform(10, 15, 10)
